@@ -14,7 +14,6 @@
   * "Un `Administrativo` **es un** `Empleado`."
 * **Frase incorrecta:** "Un `Empleado` **es un** `Docente`."
 * **Explicación:** La herencia en POO se modela de lo general a lo específico. No todo empleado del INTEP es un docente de hora cátedra (puede ser administrativo o directivo). Si invirtiéramos la jerarquía, forzaríamos a todos los empleados de la institución a registrar atributos específicos de la docencia como las horas trabajadas.
-
 ### 2. Uso y posición de `super(...)`
 * **Función en el código:** Ejecuta el constructor de la superclase (`Empleado`) para inicializar los atributos heredados (`cedula`, `nombre`, `dependencia`).
 * **¿Por qué va en la primera línea?:** Es una regla de sintaxis en Java. La superclase debe reservar memoria e inicializar el estado base del objeto antes de que la clase hija añada o modifique sus propios atributos.
