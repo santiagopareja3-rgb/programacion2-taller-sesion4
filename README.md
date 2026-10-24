@@ -14,12 +14,28 @@
   * "Un `Administrativo` **es un** `Empleado`."
 * **Frase incorrecta:** "Un `Empleado` **es un** `Docente`."
 * **Explicación:** La herencia en POO se modela de lo general a lo específico. No todo empleado del INTEP es un docente de hora cátedra (puede ser administrativo o directivo). Si invirtiéramos la jerarquía, forzaríamos a todos los empleados de la institución a registrar atributos específicos de la docencia como las horas trabajadas.
+
 ### 2. Uso y posición de `super(...)`
-* **Función en el código:** Ejecuta el constructor de la superclase (`Empleado`) para inicializar los atributos heredados (`cedula`, `nombre`, `dependencia`).
-* **¿Por qué va en la primera línea?:** Es una regla de sintaxis en Java. La superclase debe reservar memoria e inicializar el estado base del objeto antes de que la clase hija añada o modifique sus propios atributos.
+* **Función en el código:** En el constructor de `Docente` escribí:
+
+  ```java
+  super(cedula, nombre, dependencia);
+  ```
+
+  Esa línea llama al constructor de `Empleado` y le pasa los tres datos para que él asigne `cedula`, `nombre` y `dependencia`. Ahora `Docente` no necesita repetir esas asignaciones, porque reutiliza las del padre.
+
+* **¿Por qué va en la primera línea?:** Porque Java exige que la parte del objeto que viene del padre se construya antes que la de la hija. Si no escribo `super(...)`, Java intenta llamar a un constructor vacío `super()` del padre. Como `Empleado` solo tiene el constructor de tres parámetros, el código no compilaría.
 
 ### 3. Atributos `protected` vs `private`
-* **Si se usara `private`:** Las clases hijas (`Docente` y `Administrativo`) no podrían acceder directamente a `cedula`, `nombre` o `dependencia`.
+* **Si se usara `private`:** En `Empleado` los declaré así:
+
+  ```java
+  protected String cedula;
+  protected String nombre;
+  protected String dependencia;
+  ```
+
+  Si estuvieran en `private`, las clases hijas (`Docente` y `Administrativo`) no podrían acceder directamente a `cedula`, `nombre` o `dependencia`, y cualquier línea de una hija que los use directamente daría error de compilación.
 * **Alternativa:** Declarar los atributos como `private` en `Empleado` y exponer métodos de acceso públicos/protegidos (`getters` / `setters` como `getCedula()`), manteniendo un encapsulamiento más estricto sin usar `protected`.
 
 ### 4. Anotación `@Override`
