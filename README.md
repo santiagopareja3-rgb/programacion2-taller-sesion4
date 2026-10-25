@@ -39,27 +39,61 @@
 * **Alternativa:** Declarar los atributos como `private` en `Empleado` y exponer métodos de acceso públicos/protegidos (`getters` / `setters` como `getCedula()`), manteniendo un encapsulamiento más estricto sin usar `protected`.
 
 ### 4. Anotación `@Override`
-* **Propósito:** Le indica formalmente al compilador que la intención del método es sobrescribir un comportamiento heredado de la clase padre.
-* **Error que evita:** Previene errores de sintaxis por errores tipográficos en el nombre del método o firmas de parámetros. Si escribes por error `calcularPagos()`, el compilador marcará un error de inmediato en lugar de crearlo silenciosamente como un método nuevo.
+* **Propósito:** Le indica al compilador que la intención del método es sobrescribir un comportamiento heredado de la clase padre. En `Docente` escribí:
+
+  ```java
+  @Override
+  public double calcularPagoMensual() {
+      return horasCatedra * valorHora;
+  }
+  ```
+
+* **Error que evita:** Previene errores de tipeo en el nombre del método o en los parámetros. Si escribiera por error `calcularPagos()`, sin `@Override` Java lo compilaría sin quejarse como un método nuevo, y `d1.calcularPagoMensual()` seguiría usando el del padre y devolvería 0 en vez de $2.100.000. Con `@Override`, el compilador marca error de inmediato.
 
 ### 5. Ventajas de usar `super.resumen()`
-* **Ganancia en el programa:** Evita la duplicación de código y facilita el mantenimiento (principio DRY). Si la representación general de un empleado cambia en el futuro, solo se modifica la clase `Empleado` y todas las clases hijas reflejan el cambio automáticamente.
+* **Ganancia en el programa:** En `Docente` escribí:
 
+  ```java
+  @Override
+  public String resumen() {
+      return super.resumen() + " | Horas cátedra: " + horasCatedra
+              + " | Valor hora: $" + String.format("%,.0f", valorHora);
+  }
+  ```
+
+  Esto evita la duplicación de código y facilita el mantenimiento (principio DRY). Si la representación general de un empleado cambia en el futuro, solo se modifica la clase `Empleado` y todas las clases hijas reflejan el cambio automáticamente.
 ### 6. Sobrescribir (Override) vs Sobrecargar (Overload)
-* **Sobrescribir (`Override`):** Ocurre cuando una clase hija redefine un método heredado manteniendo la misma firma (nombre, parámetros y tipo de retorno). *Ejemplo:* Redefinir `calcularPagoMensual()` en `Docente` y `Administrativo`.
-* **Sobrecargar (`Overload`):** Ocurre cuando en una misma clase se definen varios métodos con el mismo nombre pero diferente firma (distinta cantidad o tipo de parámetros). *Ejemplo:* Definir dos constructores en `Empleado`, uno con argumentos y otro sin parámetros.
+* **Sobrescribir (`Override`):** Ocurre cuando una clase hija redefine un método heredado manteniendo la misma firma (nombre, parámetros y tipo de retorno). *Ejemplo de mi código:* `calcularPagoMensual()` existe en `Empleado` (devuelve 0) y lo redefiní en `Docente`:
+
+  ```java
+  @Override
+  public double calcularPagoMensual() {
+      return horasCatedra * valorHora;
+  }
+  ```
+
+  y también en `Administrativo`, donde devuelve `salarioBasico`.
+* **Sobrecargar (`Overload`):** Ocurre cuando en una misma clase se definen varios métodos con el mismo nombre pero diferente firma (distinta cantidad o tipo de parámetros). *Ejemplo del curso (no está en mi proyecto):*
+
+  ```java
+  int sumar(int a, int b)
+  double sumar(double a, double b)
+  ```
+
+  Mismo nombre, parámetros distintos, y Java elige cuál ejecutar según los argumentos.
 
 ---
-
-## Parte B. Diseño de la jerarquía
-
 ### B1. Tabla de reparto
 
 | Dato o comportamiento | ¿Dónde va? | Justificación |
-| :--- | :--- | :--- |
-| `cedula`, `nombre`, `dependencia` | `Empleado` | Atributos compartidos por todos los empleados de la institución. |
-| `horasCatedra`, `valorHora` | `Docente` | Datos exclusivos para el cálculo del pago a docentes por hora cátedra. |
-| `salarioBasico`, `diasVacaciones` | `Administrativo` | Atributos propios y exclusivos del personal administrativo. |
-| `resumen()` | Padre y sobrescrito | Método general en `Empleado`, redefinido en las hijas para incluir sus datos específicos. |
-| `calcularPagoMensual()` | Padre y sobrescrito | Definido en la clase padre con un retorno base (0.0) y redefinido en cada clase hija según su lógica de pago. |
-| `tomarVacaciones(int dias)` | `Administrativo` | Comportamiento exclusivo del personal administrativo para el control de sus días disponibles. |
+|---|---|---|
+| cédula | Empleado (clase padre) | Todo empleado la tiene |
+| nombre | Empleado (clase padre) | Todo empleado lo tiene |
+| dependencia | Empleado (clase padre) | Todo empleado pertenece a una |
+| resumen() | Padre y sobrescrito | Existe en todos, pero cada hija agrega sus datos |
+| calcularPagoMensual() | Padre y sobrescrito | Todos cobran, pero se calcula distinto |
+| horasCatedra | Docente | Solo el docente de hora cátedra las tiene |
+| valorHora | Docente | Solo el docente de hora cátedra lo tiene |
+| salarioBasico | Administrativo | Solo el administrativo tiene salario fijo |
+| diasVacaciones | Administrativo | Solo el administrativo tiene vacaciones |
+| tomarVacaciones(int dias) | Administrativo | Comportamiento exclusivo del administrativo |
